@@ -31,4 +31,10 @@ class Fraccion(numerador: Int = 0, denominador: Int = 1) {
     fun mostrar() {
         println("$numerador/$denominador")
     }
+
+    operator fun plus(otra: Fraccion): Fraccion {
+    val nuevoNumerador = this.numerador * otra.denominador + this.denominador * otra.numerador
+    val nuevoDenominador = this.denominador * otra.denominador
+    return Fraccion(nuevoNumerador, nuevoDenominador)
+}
 }
