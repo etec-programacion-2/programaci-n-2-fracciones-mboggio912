@@ -3,38 +3,65 @@
  */
 package org.example
 
-class Fraccion(numerador: Int = 0, denominador: Int = 1) {
-    
+class Fraccion(
+    private var _numerador: Int = 0,
+    private var _denominador: Int = 1
+) {
     init {
-        if (denominador == 0) {
+        if (_denominador == 0) {
             throw IllegalArgumentException("El denominador no puede ser cero")
         }
     }
-    
-    var numerador: Int = numerador
-        get() = field  // 'field' es la palabra clave para acceder al valor almacenado
+
+    var numerador: Int
+        get() = _numerador
         set(value) {
-            field = value  // 'field' asigna el nuevo valor
+            _numerador = value
         }
     
-    var denominador: Int = denominador
-        get() = field
+    var denominador: Int
+        get() = _denominador
         set(value) {
             if (value == 0) throw IllegalArgumentException("El denominador no puede ser cero")
-            field = value
+            _denominador = value
         }
-    
+
     override fun toString(): String {
         return "$numerador/$denominador"
     }
-    
+
     fun mostrar() {
         println("$numerador/$denominador")
     }
 
     operator fun plus(otra: Fraccion): Fraccion {
-    val nuevoNumerador = this.numerador * otra.denominador + this.denominador * otra.numerador
-    val nuevoDenominador = this.denominador * otra.denominador
-    return Fraccion(nuevoNumerador, nuevoDenominador)
-}
+        val nuevoNumerador = this.numerador * otra.denominador + this.denominador * otra.numerador
+        val nuevoDenominador = this.denominador * otra.denominador
+        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
+        resultado.simplificar()
+        return resultado
+    }
+    operator fun minus(otra: Fraccion): Fraccion {
+        val nuevoNumerador = this.numerador * otra.denominador - this.denominador * otra.numerador
+        val nuevoDenominador = this.denominador * otra.denominador
+        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
+        resultado.simplificar()
+        return resultado
+    }
+    private fun simplificar() {
+        val mcd = calcularMCD(kotlin.math.abs(numerador), kotlin.math.abs(denominador))
+        if (mcd > 1) {
+            _numerador /= mcd
+            _denominador /= mcd
+        }
+        // Manejar el signo: el denominador siempre debe ser positivo
+        if (_denominador < 0) {
+            _numerador = -_numerador
+            _denominador = -_denominador
+        }
+    }
+
+    private fun calcularMCD(a: Int, b: Int): Int {
+        return if (b == 0) a else calcularMCD(b, a % b)
+    }
 }
