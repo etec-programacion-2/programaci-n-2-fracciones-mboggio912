@@ -11,6 +11,8 @@ class Fraccion(
         if (_denominador == 0) {
             throw IllegalArgumentException("El denominador no puede ser cero")
         }
+        // Simplificar la fracción al crearla
+        simplificar()
     }
 
     var numerador: Int
@@ -18,7 +20,7 @@ class Fraccion(
         set(value) {
             _numerador = value
         }
-    
+
     var denominador: Int
         get() = _denominador
         set(value) {
@@ -27,7 +29,11 @@ class Fraccion(
         }
 
     override fun toString(): String {
-        return "$numerador/$denominador"
+        return when {
+            denominador == 1 -> "$numerador"
+            numerador == 0 -> "0"
+            else -> "$numerador/$denominador"
+        }
     }
 
     fun mostrar() {
@@ -41,6 +47,7 @@ class Fraccion(
         resultado.simplificar()
         return resultado
     }
+
     operator fun minus(otra: Fraccion): Fraccion {
         val nuevoNumerador = this.numerador * otra.denominador - this.denominador * otra.numerador
         val nuevoDenominador = this.denominador * otra.denominador
@@ -48,6 +55,31 @@ class Fraccion(
         resultado.simplificar()
         return resultado
     }
+
+    // ETAPA 3: Operador multiplicación
+    operator fun times(otra: Fraccion): Fraccion {
+        val nuevoNumerador = this.numerador * otra.numerador
+        val nuevoDenominador = this.denominador * otra.denominador
+        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
+        resultado.simplificar()
+        return resultado
+    }
+
+    // ETAPA 3: Operador división
+    operator fun div(otra: Fraccion): Fraccion {
+        // Validar que no se divida por cero
+        if (otra.numerador == 0) {
+            throw IllegalArgumentException("No se puede dividir por una fracción con numerador cero")
+        }
+        
+        // (a/b) / (c/d) = (a*d)/(b*c)
+        val nuevoNumerador = this.numerador * otra.denominador
+        val nuevoDenominador = this.denominador * otra.numerador
+        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
+        resultado.simplificar()
+        return resultado
+    }
+
     private fun simplificar() {
         val mcd = calcularMCD(kotlin.math.abs(numerador), kotlin.math.abs(denominador))
         if (mcd > 1) {
