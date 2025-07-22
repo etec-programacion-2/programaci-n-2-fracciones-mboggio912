@@ -6,11 +6,11 @@
 
 ## Información del Alumno
 
-**Nombre y Apellido:** [Escribir aquí tu nombre y apellido]
+**Nombre y Apellido:** Mateo Boggio
 
-**Curso:** [Escribir aquí tu curso]
+**Curso:** 4I
 
-**Fecha de entrega:** [Escribir aquí la fecha de entrega]
+**Fecha de entrega:** 
 
 ---
 
