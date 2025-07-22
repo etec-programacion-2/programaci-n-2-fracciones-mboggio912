@@ -3,10 +3,37 @@
  */
 package org.example
 
+/**
+ * Clase que representa una fracción matemática con operaciones básicas
+ * @param _numerador El numerador de la fracción (puede ser negativo)
+ * @param _denominador El denominador de la fracción (debe ser diferente de cero)
+ * @throws IllegalArgumentException si el denominador es cero
+ */
 class Fraccion(
     private var _numerador: Int = 0,
     private var _denominador: Int = 1
-) {
+) : Comparable<Fraccion> {
+
+    companion object {
+        /**
+         * Crea una fracción a partir de un número decimal
+         * @param decimal El número decimal a convertir
+         * @return Una nueva fracción que representa el decimal
+         */
+        fun desdeDecimal(decimal: Double): Fraccion {
+            if (decimal.isNaN() || decimal.isInfinite()) {
+                throw IllegalArgumentException("No se puede convertir NaN o Infinite a fracción")
+            }
+            
+            // Manejar caso especial de cero
+            if (decimal == 0.0) return Fraccion(0, 1)
+            
+            // Determinar precisión necesaria
+            val precision = 1000000 // 6 decimales de precisión
+            val numerador = (decimal * precision).toInt()
+            return Fraccion(numerador, precision)
+        }
+    }
     init {
         if (_denominador == 0) {
             throw IllegalArgumentException("El denominador no puede ser cero")
@@ -15,17 +42,26 @@ class Fraccion(
         simplificar()
     }
 
+    /**
+     * Propiedad que obtiene o establece el numerador de la fracción
+     */
     var numerador: Int
         get() = _numerador
         set(value) {
             _numerador = value
+            simplificar()
         }
 
+    /**
+     * Propiedad que obtiene o establece el denominador de la fracción
+     * @throws IllegalArgumentException si se intenta establecer el denominador en cero
+     */
     var denominador: Int
         get() = _denominador
         set(value) {
             if (value == 0) throw IllegalArgumentException("El denominador no puede ser cero")
             _denominador = value
+            simplificar()
         }
 
     override fun toString(): String {
@@ -40,32 +76,45 @@ class Fraccion(
         println("$numerador/$denominador")
     }
 
+    /**
+     * Suma esta fracción con otra fracción
+     * @param otra La fracción a sumar
+     * @return Una nueva fracción con el resultado de la suma
+     */
     operator fun plus(otra: Fraccion): Fraccion {
         val nuevoNumerador = this.numerador * otra.denominador + this.denominador * otra.numerador
         val nuevoDenominador = this.denominador * otra.denominador
-        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
-        resultado.simplificar()
-        return resultado
+        return Fraccion(nuevoNumerador, nuevoDenominador)
     }
 
+    /**
+     * Resta otra fracción de esta fracción
+     * @param otra La fracción a restar
+     * @return Una nueva fracción con el resultado de la resta
+     */
     operator fun minus(otra: Fraccion): Fraccion {
         val nuevoNumerador = this.numerador * otra.denominador - this.denominador * otra.numerador
         val nuevoDenominador = this.denominador * otra.denominador
-        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
-        resultado.simplificar()
-        return resultado
+        return Fraccion(nuevoNumerador, nuevoDenominador)
     }
 
-    // ETAPA 3: Operador multiplicación
+    /**
+     * Multiplica esta fracción con otra fracción
+     * @param otra La fracción a multiplicar
+     * @return Una nueva fracción con el resultado de la multiplicación
+     */
     operator fun times(otra: Fraccion): Fraccion {
         val nuevoNumerador = this.numerador * otra.numerador
         val nuevoDenominador = this.denominador * otra.denominador
-        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
-        resultado.simplificar()
-        return resultado
+        return Fraccion(nuevoNumerador, nuevoDenominador)
     }
 
-    // ETAPA 3: Operador división
+    /**
+     * Divide esta fracción entre otra fracción
+     * @param otra La fracción divisor
+     * @return Una nueva fracción con el resultado de la división
+     * @throws IllegalArgumentException si se intenta dividir por una fracción con numerador cero
+     */
     operator fun div(otra: Fraccion): Fraccion {
         // Validar que no se divida por cero
         if (otra.numerador == 0) {
@@ -75,17 +124,88 @@ class Fraccion(
         // (a/b) / (c/d) = (a*d)/(b*c)
         val nuevoNumerador = this.numerador * otra.denominador
         val nuevoDenominador = this.denominador * otra.numerador
-        val resultado = Fraccion(nuevoNumerador, nuevoDenominador)
-        resultado.simplificar()
-        return resultado
+        return Fraccion(nuevoNumerador, nuevoDenominador)
     }
 
+    /**
+     * Compara esta fracción con otra fracción
+     * @param otra La fracción a comparar
+     * @return Un entero negativo si esta fracción es menor, cero si son iguales, positivo si es mayor
+     */
+    override fun compareTo(otra: Fraccion): Int {
+        val valorEsta = this.numerador * otra.denominador
+        val valorOtra = otra.numerador * this.denominador
+        return valorEsta.compareTo(valorOtra)
+    }
+
+    /**
+     * Verifica si esta fracción es igual a otro objeto
+     * @param other El objeto a comparar
+     * @return true si son iguales, false en caso contrario
+     */
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Fraccion) return false
+        
+        // Comparar fracciones simplificadas
+        val estaSimplificada = Fraccion(this.numerador, this.denominador)
+        val otraSimplificada = Fraccion(other.numerador, other.denominador)
+        
+        return estaSimplificada.numerador == otraSimplificada.numerador && 
+               estaSimplificada.denominador == otraSimplificada.denominador
+    }
+
+    /**
+     * Calcula el código hash de la fracción
+     * @return El código hash basado en la fracción simplificada
+     */
+    override fun hashCode(): Int {
+        val fraccionSimplificada = Fraccion(numerador, denominador)
+        return 31 * fraccionSimplificada.numerador + fraccionSimplificada.denominador
+    }
+
+    /**
+     * Determina si esta fracción es mayor que otra fracción
+     * @param otra La fracción a comparar
+     * @return true si esta fracción es mayor, false en caso contrario
+     */
+    fun esMayor(otra: Fraccion): Boolean {
+        return this.compareTo(otra) > 0
+    }
+
+    /**
+     * Determina si esta fracción es menor que otra fracción
+     * @param otra La fracción a comparar
+     * @return true si esta fracción es menor, false en caso contrario
+     */
+    fun esMenor(otra: Fraccion): Boolean {
+        return this.compareTo(otra) < 0
+    }
+
+    /**
+     * Convierte la fracción a su representación decimal
+     * @return El valor decimal de la fracción
+     */
+    fun aDecimal(): Double {
+        return numerador.toDouble() / denominador.toDouble()
+    }
+
+    /**
+     * Simplifica la fracción a su forma más reducida
+     * Maneja el signo para que el denominador siempre sea positivo
+     */
     private fun simplificar() {
+        if (numerador == 0) {
+            _denominador = 1
+            return
+        }
+        
         val mcd = calcularMCD(kotlin.math.abs(numerador), kotlin.math.abs(denominador))
         if (mcd > 1) {
             _numerador /= mcd
             _denominador /= mcd
         }
+        
         // Manejar el signo: el denominador siempre debe ser positivo
         if (_denominador < 0) {
             _numerador = -_numerador
@@ -93,6 +213,12 @@ class Fraccion(
         }
     }
 
+    /**
+     * Calcula el máximo común divisor usando el algoritmo de Euclides
+     * @param a Primer número entero (debe ser positivo)
+     * @param b Segundo número entero (debe ser positivo)
+     * @return El máximo común divisor de a y b
+     */
     private fun calcularMCD(a: Int, b: Int): Int {
         return if (b == 0) a else calcularMCD(b, a % b)
     }
