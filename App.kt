@@ -10,6 +10,8 @@ fun main() {
     println(fraccion.mostrar())
     println(fraccion.sumar(denominador2, numerador2))
     println(fraccion.restar(denominador2, numerador2))
+    println(fraccion.multiplicar(denominador2, numerador2))
+    println(fraccion.dividir(denominador2, numerador2))
 
 
 }

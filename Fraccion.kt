@@ -65,6 +65,33 @@ class Fraccion (_numerador: Int, _denominador: Int) {
 
     }
 
+    fun multiplicar(denominador: Int, numerador: Int): String{
+        if (denominador == 0 || this.denominador == 0){
+            return "El denominador no puede ser cero"
+        }
+        else {
+            var numeradornew = (this.numerador * numerador)
+            var denominadornew = (this.denominador * denominador)
+            var finalfuncion = simplifyFraction(numeradornew, denominadornew)
+            return finalfuncion
+        }
+
+    }
+
+    fun dividir(denominador: Int, numerador: Int): String{
+        if (numerador == 0  || this.denominador == 0){
+            return "El denominador no puede ser cero"
+        }
+
+        else {
+            var numeradornew = (this.numerador * denominador)
+            var denominadornew = (this.denominador * numerador)
+            var finalfuncion = simplifyFraction(numeradornew, denominadornew)
+            return finalfuncion
+        }
+
+    }
+
 
 
 }
