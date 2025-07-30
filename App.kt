@@ -4,8 +4,12 @@
 package org.example
 
 fun main() {
-    var fraccion = Fraccion(0,1)
+    var denominador2 = 10
+    var numerador2 = 20
+    var fraccion = Fraccion(10,1)
     println(fraccion.mostrar())
+    println(fraccion.sumar(denominador2, numerador2))
+    println(fraccion.restar(denominador2, numerador2))
 
 
 }
