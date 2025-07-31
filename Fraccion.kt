@@ -1,5 +1,7 @@
 package org.example
 
+import kotlin.math.*
+import java.lang.Math
 class Fraccion (_numerador: Int, _denominador: Int) {
     var numerador: Int = _numerador
         get() = field
@@ -84,8 +86,8 @@ class Fraccion (_numerador: Int, _denominador: Int) {
         }
 
         else {
-            var denominadornew = (this.numerador * denominador)
-            var numeradornew = (this.denominador * numerador)
+            var numeradornew = (this.numerador * denominador)
+            var denominadornew = (this.denominador * numerador)
             var finalfuncion = simplifyFraction(numeradornew, denominadornew)
             return finalfuncion
         }
@@ -95,24 +97,22 @@ class Fraccion (_numerador: Int, _denominador: Int) {
 
 
 
-    fun esMayor (numerador: Int, denominador: Int): String{
-        var frac1 =this.numerador / this.denominador
-        var frac2 = numerador / denominador
-        if (frac1 > frac2){
-            return "mayor"
-        }
-        else if (frac2 > frac1){
-            return "menor"
-        }
-        else return "igual"
+    fun comparador(numerador: Int, denominador: Int): String {
 
+        val producto1 = this.numerador * denominador
+        val producto2 = numerador * this.denominador
+
+        return when {
+            producto1 > producto2 -> "mayor"
+            producto1 < producto2 -> "menor"
+            else -> "igual"
+        }
     }
 
-    fun aDecimal (): Float{
-        var decimal = (this.numerador / this.denominador).toFloat()
-        return decimal
-
+    fun aDecimal(): Double {
+        return this.numerador.toDouble() / this.denominador.toDouble()
     }
+
 
     companion object {
         fun desdeDecimal(decimal: Double): Fraccion {
@@ -143,7 +143,7 @@ class Fraccion (_numerador: Int, _denominador: Int) {
             val numDigitosDecimales = parteDecimal.length
 
             // Crear fracción: decimal = parteEntera + parteDecimal/10^numDigitos
-            val denominadorBase = kotlin.math.pow(10.0, numDigitosDecimales.toDouble()).toLong()
+            val denominadorBase = Math.pow(10.0, numDigitosDecimales.toDouble()).toLong()
             val numeradorDecimal = parteDecimal.toLong()
             val numeradorTotal = parteEntera * denominadorBase + numeradorDecimal
 
@@ -151,6 +151,7 @@ class Fraccion (_numerador: Int, _denominador: Int) {
             val numeradorFinal = if (esNegativo) -numeradorTotal.toInt() else numeradorTotal.toInt()
 
             return Fraccion(numeradorFinal, denominadorBase.toInt())
+
         }
     }
 
