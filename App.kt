@@ -3,7 +3,3 @@
  */
 package org.example
 
-fun main() {
-   val miFraccion = Fraccion()
-   miFraccion.mostrar()
-}
